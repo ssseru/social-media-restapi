@@ -25,6 +25,12 @@ exports.createPost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
+  if (!req.file) {
+    const error = new Error("No image provided");
+    error.statusCode = 422;
+    throw error;
+  }
+  const imageUrl = req.file.path.replace("\\", "/");
   const { title, content } = req.body;
   const post = new Post({
     creator: {
@@ -32,7 +38,7 @@ exports.createPost = (req, res, next) => {
     },
     title: title,
     content: content,
-    imageUrl: "images/lens.jpeg",
+    imageUrl: imageUrl,
   });
   post
     .save()
