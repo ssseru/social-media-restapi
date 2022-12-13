@@ -1,4 +1,6 @@
 const { validationResult } = require("express-validator");
+const { post } = require("../routes/feed");
+const Post = require("../models/post");
 
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
@@ -26,16 +28,22 @@ exports.createPost = (req, res, next) => {
     });
   }
   const { title, content } = req.body;
-  res.status(201).json({
-    message: "Post created",
-    post: {
-      _id: new Date().toISOString,
-      creator: {
-        name: "Sagar",
-      },
-      createdAt: new Date(),
-      title: title,
-      content: content,
+  const post = new Post({
+    creator: {
+      name: "Sagar",
     },
+    title: title,
+    content: content,
+    imageUrl: "images/lens.jpeg",
   });
+  post
+    .save()
+    .then((result) => {
+      console.log(result);
+      res.status(201).json({
+        message: "Post created",
+        post: result,
+      });
+    })
+    .catch((e) => console.log(e));
 };

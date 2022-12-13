@@ -1,9 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const feedRoutes = require("./routes/feed");
 
 const app = express();
+
+const MONGODB_URI =
+  "mongodb+srv://saisagarseru:saisagarseru@cluster0.khj0jdo.mongodb.net/messages";
 
 // app.use(bodyParser.urlencoded());
 
@@ -22,4 +26,10 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 
-app.listen(8080);
+mongoose
+  .connect(MONGODB_URI)
+  .then((result) => {
+    console.log("Connected to DB succesfull");
+    app.listen(8080);
+  })
+  .catch((e) => console.log(e));
