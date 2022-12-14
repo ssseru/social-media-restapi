@@ -73,7 +73,13 @@ mongoose
   .then((result) => {
     console.log("Connected to DB succesfull");
     const server = app.listen(8080);
-    const io = require("socket.io")(server);
+    const io = require("socket.io")(server, {
+      // without specifying cors cant connect
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE", "PUT"],
+      },
+    });
     io.on("connection", (socket) => {
       console.log("client connected");
     });
