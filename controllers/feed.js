@@ -101,32 +101,6 @@ exports.createPost = async (req, res, next) => {
     }
     next(err);
   }
-  // post
-  //   .save()
-  //   .then((result) => {
-  //     return User.findById(req.userId);
-  //   })
-  //   .then((user) => {
-  //     creator = user;
-  //     user.posts.push(post);
-  //     return user.save();
-  //   })
-  //   .then((result) => {
-  //     res.status(201).json({
-  //       message: "Post created",
-  //       post: post,
-  //       creator: {
-  //         _id: creator._id,
-  //         name: creator.name,
-  //       },
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //     }
-  //     next(err);
-  //   });
 };
 
 exports.getPost = async (req, res, next) => {
@@ -169,13 +143,13 @@ exports.updatePost = async (req, res, next) => {
     throw error;
   }
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("creator");
     if (!post) {
       const error = new Error("Could not find post");
       error.statusCode = 404;
       throw error;
     }
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error("Not Authorized");
       error.statusCode = 403;
       throw error;
@@ -187,6 +161,10 @@ exports.updatePost = async (req, res, next) => {
     post.imageUrl = imageUrl;
     post.content = content;
     const result = await post.save();
+    io.getIO().emit("posts", {
+      action: "update",
+      post: result,
+    });
     res.status(200).json({
       message: "post updated",
       post: result,
