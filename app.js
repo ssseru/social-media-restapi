@@ -72,6 +72,10 @@ mongoose
   .connect(MONGODB_URI)
   .then((result) => {
     console.log("Connected to DB succesfull");
-    app.listen(8080);
+    const server = app.listen(8080);
+    const io = require("socket.io")(server);
+    io.on("connection", (socket) => {
+      console.log("client connected");
+    });
   })
   .catch((e) => console.log(e));
