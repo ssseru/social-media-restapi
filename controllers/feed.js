@@ -16,6 +16,7 @@ exports.getPosts = async (req, res, next) => {
     const totalItems = await Post.find().countDocuments();
     const posts = await Post.find()
       .populate("creator")
+      .sort({ createdAt: -1 })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
     res.status(200).json({
@@ -29,27 +30,6 @@ exports.getPosts = async (req, res, next) => {
     }
     next(err);
   }
-  // Post.find()
-  //   .countDocuments()
-  //   .then((count) => {
-  //     totalItems = count;
-  //     return Post.find()
-  //       .skip((currentPage - 1) * perPage)
-  //       .limit(perPage);
-  //   })
-  //   .then((posts) => {
-  //     res.status(200).json({
-  //       message: "Fetched Posts!",
-  //       posts: posts,
-  //       totalItems: totalItems,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //     }
-  //     next(err);
-  //   });
 };
 
 exports.createPost = async (req, res, next) => {
