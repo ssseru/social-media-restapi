@@ -80,7 +80,6 @@ exports.login = (req, res, next) => {
 };
 
 exports.getUserStatus = (req, res, next) => {
-  console.log("getStatus", req.userId);
   User.findById(req.userId)
     .then((user) => {
       if (!user) {
