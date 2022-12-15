@@ -108,7 +108,7 @@ module.exports = {
       updatedAt: createdPost.updatedAt.toISOString(),
     };
   },
-  posts: async function (req) {
+  posts: async function (args, req) {
     if (!req.isAuth) {
       const error = new Error("Not authenticated!");
       error.code = 401;
