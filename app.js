@@ -5,9 +5,11 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
-
-const feedRoutes = require("./routes/feed");
-const authRoutes = require("./routes/auth");
+const { graphqlHTTP } = require("express-graphql");
+const graphqlSchema = require("./graphql/schema");
+const graphqlResolver = require("./graphql/resolvers");
+// const feedRoutes = require("./routes/feed");
+// const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -54,8 +56,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/feed", feedRoutes);
-app.use("/auth", authRoutes);
+// app.use("/feed", feedRoutes);
+// app.use("/auth", authRoutes);
+
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolver,
+  })
+);
 
 app.use((error, req, res, next) => {
   console.log(error);
@@ -72,10 +82,11 @@ mongoose
   .connect(MONGODB_URI)
   .then((result) => {
     console.log("Connected to DB succesfull");
-    const server = app.listen(8080);
-    const io = require("./socket").init(server);
-    io.on("connection", (socket) => {
-      console.log("client connected");
-    });
+    app.listen(8080);
+    // const server = app.listen(8080);
+    // const io = require("./socket").init(server);
+    // io.on("connection", (socket) => {
+    // console.log("client connected");
+    // });
   })
   .catch((e) => console.log(e));
