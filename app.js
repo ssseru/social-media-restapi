@@ -51,7 +51,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE"
+    "OPTIONS,GET, POST, PUT, PATCH, DELETE"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
@@ -64,6 +64,21 @@ app.use((req, res, next) => {
 // app.use("/auth", authRoutes);
 
 app.use(auth);
+
+app.put("/post-image", (req, res, next) => {
+  if (!req.isAuth) {
+    throw new Error("Not authenticated!");
+  }
+  if (!req.file) {
+    return res.status(200).json({ message: "No file provided!" });
+  }
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+  return res
+    .status(201)
+    .json({ message: "File stored.", filePath: req.file.path });
+});
 
 app.use(
   "/graphql",
@@ -106,3 +121,8 @@ mongoose
     // });
   })
   .catch((e) => console.log(e));
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.log(err));
+};
