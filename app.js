@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -123,6 +124,6 @@ mongoose
   .catch((e) => console.log(e));
 
 const clearImage = (filePath) => {
-  filePath = path.join(__dirname, "..", filePath);
+  filePath = path.join(__dirname, ".", filePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
