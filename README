@@ -1,0 +1,6 @@
+This is a REST api for a social media app.
+Made using express.js 
+Features include:
+1. Login and Register - Authentication using jwt
+2. Status of a user
+3. Creating posts for different users
