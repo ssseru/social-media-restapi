@@ -1,4 +1,4 @@
-This is a REST api for a social media app.
+This is a GraphQL(REST code is also there) api for a social media app.
 Made using express.js 
 Features include:
 1. Login and Register - Authentication using jwt
